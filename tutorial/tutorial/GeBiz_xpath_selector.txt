@@ -1,0 +1,1 @@
+response.xpath('//div[re:test(@class,"formSectionHeader6_TEXT")]/text').extract()
