@@ -2,23 +2,31 @@ import scrapy
 
 
 class QuotesSpider(scrapy.Spider):
-    name = "quotes"
+    name = "tenders"
 
     def start_requests(self):
-        url = 'https://www.gebiz.gov.sg/ptn/opportunity/BOListing.xhtml?origin=menu'
-        tag = getattr(self, 'tag', None)
-        if tag is not None:
-            url = url + 'tag/' + tag
-        yield scrapy.Request(url, self.parse)
+        urls = [
+            'https://www.gebiz.gov.sg/ptn/opportunity/BOListing.xhtml?origin=menu'
+        ]
+        for url in urls:
+            yield scrapy.Request(url=url, callback=self.parse)
 
     def parse(self, response):
-        for quote in response.css('div.quote'):
-            yield {
-                'text': quote.css('span.text::text').extract_first(),
-                'author': quote.css('small.author::text').extract_first(),
-            }
+        page = response.url.split("/")[-2]
+        filename = 'tenders-%s.html' % page
+        with open(filename, 'wb') as f:
+            f.write(response.body)
+        self.log('Saved file %s' % filename)
 
-        next_page = response.css('li.next a::attr(href)').extract_first()
-        if next_page is not None:
-            next_page = response.urljoin(next_page)
-            yield scrapy.Request(next_page, self.parse)
+    '''
+
+    def parse(self, response):
+
+        yield{
+
+        'quotation_number' : response.xpath('//div[re:test(@class,"formSectionHeader6_TEXT")]/text()').extract(),
+        'tender-title' : response.xpath('//a[re:test(@class,"commandLink_TITLE-BLUE")]/text()').extract(),
+        'tender-description' : response.xpath('//div[re:test(@class,"formOutputText_VALUE-DIV")]/text()').extract(),
+        'closing_date' : response.xpath('//div[re:test(@class,"formOutputText_HIDDEN-LABEL outputText_DATE-GREEN")]/text()').extract()
+        }
+    '''
