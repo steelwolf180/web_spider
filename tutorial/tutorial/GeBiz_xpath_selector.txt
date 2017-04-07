@@ -1,1 +1,4 @@
-response.xpath('//div[re:test(@class,"formSectionHeader6_TEXT")]/text').extract()
+Quotation Number - response.xpath('//div[re:test(@class,"formSectionHeader6_TEXT")]/text()').extract()
+Quotation Title - response.xpath('//a[re:test(@class,"commandLink_TITLE-BLUE")]/text()').extract()
+Agency, Published Date, Procurement Category - response.xpath('//div[re:test(@class,"formOutputText_VALUE-DIV")]/text()').extract()
+Closing Date - response.xpath('//div[re:test(@class,"formOutputText_HIDDEN-LABEL outputText_DATE-GREEN")]/text()').extract()
